@@ -75,3 +75,5 @@ C:\proj\metal_collector\BE\MetalCollector\MetalCollector.WebApi\obj\Debug\net7.0
 C:\proj\metal_collector\BE\MetalCollector\MetalCollector.WebApi\obj\Debug\net7.0\MetalCollector.WebApi.pdb
 C:\proj\metal_collector\BE\MetalCollector\MetalCollector.WebApi\obj\Debug\net7.0\MetalCollector.WebApi.genruntimeconfig.cache
 C:\proj\metal_collector\BE\MetalCollector\MetalCollector.WebApi\obj\Debug\net7.0\ref\MetalCollector.WebApi.dll
+C:\proj\metal_collector\BE\MetalCollector\MetalCollector.WebApi\bin\Debug\net7.0\AutoMapper.dll
+C:\proj\metal_collector\BE\MetalCollector\MetalCollector.WebApi\bin\Debug\net7.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll

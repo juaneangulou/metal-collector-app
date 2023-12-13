@@ -1,4 +1,5 @@
-﻿namespace MetalCollector.WebApi.Models
+﻿
+namespace MetalCollector.WebApi.Models
 {
     public class Band
     {
@@ -15,10 +16,10 @@
         public ICollection<Release> Discography { get; set; }
         public string Link { get; set; }
         public string Photo { get; set; }
+        public string? MABandId { get; set; }
 
         public Band()
         {
-            BandId = Guid.NewGuid().ToString();
             Lineup = new List<Member>();
             Discography = new List<Release>();
         }
@@ -30,11 +31,7 @@
         public string BandId { get; set; }
         public string Name { get; set; }
         public string Instrument { get; set; }
-
-        public Member()
-        {
-            MemberId = Guid.NewGuid().ToString();
-        }
+        public string? MAMemberId { get; set; }       
     }
 
     public class Release
@@ -44,26 +41,18 @@
         public string Title { get; set; }
         public string Type { get; set; }
         public string Year { get; set; }
-
-        public Release()
-        {
-            ReleaseId = Guid.NewGuid().ToString();
-        }
+        public string? MAReleaseId { get; set; }
     }
 
     public class Item
     {
         public string ItemId { get; set; }
-        public string ArtistId { get; set; }
-        public string Barcode { get; set; }
+        public string? ArtistId { get; set; }
+        public string? Barcode { get; set; }
         public DateTime? BuyDate { get; set; }
-        public string EmId { get; set; }
+        public string? EmId { get; set; }
         public string ItemType { get; set; }
         public string Name { get; set; }
-
-        public Item()
-        {
-            ItemId = Guid.NewGuid().ToString();
-        }
+        public string? MAArtistId { get; set; }        
     }
 }

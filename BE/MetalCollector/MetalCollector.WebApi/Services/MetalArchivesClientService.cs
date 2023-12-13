@@ -18,7 +18,7 @@ namespace MetalCollector.WebApi.Services
             return query.Replace("  ", " ").Replace(" ", "*");
         }
 
-        public async Task<List<ArtistDto>> FetchArtists(string query)
+        public async Task<List<ArtistMADto>> FetchArtists(string query)
         {
             string processedQuery = ProcessQueryString(query);
             var response = await _httpClient.GetAsync($"https://api.metal-map.com/v1/search/{processedQuery}");
@@ -26,24 +26,29 @@ namespace MetalCollector.WebApi.Services
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<List<ArtistDto>>(content);
+                return JsonSerializer.Deserialize<List<ArtistMADto>>(content);
             }
 
-            return new List<ArtistDto>();
+            return new List<ArtistMADto>();
         }
 
-        public async Task<ArtistDto> FetchArtistById(string id)
+        public async Task<ArtistMADto> FetchArtistById(string id)
         {
             var response = await _httpClient.GetAsync($"https://api.metal-map.com/v1/bands/{id}");
 
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var artists = JsonSerializer.Deserialize<List<ArtistDto>>(content);
+                var artists = JsonSerializer.Deserialize<List<ArtistMADto>>(content);
                 return artists?[0];
             }
 
             return null;
+        }
+
+        public async Task<ArtistMADto> AddArtist(ArtistMADto artist)
+        {
+            throw new NotImplementedException();
         }
     }
 }

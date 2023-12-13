@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 
 class Artist {
@@ -38,7 +39,7 @@ class Artist {
     this.social,
   });
 
-  factory Artist.fromJson(Map<String, dynamic> json) {
+  factory Artist.fromJson(Map<dynamic, dynamic> json) {
     return Artist(
       id: json['id'],
       emId: json['em_id'],
@@ -53,15 +54,17 @@ class Artist {
       photo: json['photo'],
       link: json['link'],
       status: json['status'],
-      discography: json['discography'] != null ? 
-                 (json['discography'] as List).map((e) => Discography.fromJson(e)).toList() : 
-                 null, // Manejo cuando 'discography' no está presente.
-      lineup: json['lineup'] != null ? 
-                 (json['lineup'] as List).map((e) => Lineup.fromJson(e)).toList() : 
-                 null, // Manejo cuando 'lineup' no está presente.
-      social: json['social'] != null ? 
-                 (json['social'] as List).map((e) => Social.fromJson(e)).toList() : 
-                 null, // Manejo cuando 'social' no está presente.
+      discography: json['discography'] != null
+          ? (json['discography'] as List)
+              .map((e) => Discography.fromJson(e))
+              .toList()
+          : null, // Manejo cuando 'discography' no está presente.
+      lineup: json['lineup'] != null
+          ? (json['lineup'] as List).map((e) => Lineup.fromJson(e)).toList()
+          : null, // Manejo cuando 'lineup' no está presente.
+      social: json['social'] != null
+          ? (json['social'] as List).map((e) => Social.fromJson(e)).toList()
+          : null, // Manejo cuando 'social' no está presente.
     );
   }
 
@@ -101,18 +104,19 @@ class Artist {
       photo: map['photo'],
       link: map['link'],
       status: map['status'],
-      discography: map['discography'] != null ? 
-                 (map['discography'] as List).map((e) => Discography.fromJson(e)).toList() : 
-                 null, // Manejo cuando 'discography' no está presente.
-      lineup: map['lineup'] != null ? 
-                 (map['lineup'] as List).map((e) => Lineup.fromJson(e)).toList() : 
-                 null, // Manejo cuando 'lineup' no está presente.
-      social: map['social'] != null ? 
-                 (map['social'] as List).map((e) => Social.fromJson(e)).toList() : 
-                 null, // Manejo cuando 'social' no está presente.
+      discography: map['discography'] != null
+          ? (map['discography'] as List)
+              .map((e) => Discography.fromJson(e))
+              .toList()
+          : null, // Manejo cuando 'discography' no está presente.
+      lineup: map['lineup'] != null
+          ? (map['lineup'] as List).map((e) => Lineup.fromJson(e)).toList()
+          : null, // Manejo cuando 'lineup' no está presente.
+      social: map['social'] != null
+          ? (map['social'] as List).map((e) => Social.fromJson(e)).toList()
+          : null, // Manejo cuando 'social' no está presente.
     );
   }
-
 }
 
 class Discography {
@@ -184,14 +188,14 @@ class Social {
   }
 }
 
-
 String processQueryString(String query) {
   return query.replaceAll(RegExp(r'\s{2,}'), ' ').replaceAll(' ', '*');
 }
 
 Future<List<Artist>> fetchArtists(String query) async {
   String processedQuery = processQueryString(query);
-  final response = await http.get(Uri.parse('https://api.metal-map.com/v1/search/$processedQuery'));
+  final response = await http.get(Uri.parse(
+      'https://api-metalcollector.mymetalevents.com/api/Artists?query=$processedQuery'));
 
   if (response.statusCode == 200) {
     List data = json.decode(response.body);
@@ -202,15 +206,31 @@ Future<List<Artist>> fetchArtists(String query) async {
   }
 }
 
-
 Future<Artist?> fetchArtistById(String id) async {
-  final response = await http.get(Uri.parse('https://api.metal-map.com/v1/bands/$id'));
+  final Dio _dio = Dio();
 
-  if (response.statusCode == 200) {
-    List data = json.decode(response.body);
-    return data.map((item) => Artist.fromJson(item)).toList().firstOrNull;
-  } else {
-    return null;
-    //throw Exception('Failed to load artists');
-  }
+  // final response = await http.get(Uri.parse(
+  //     'https://api-metalcollector.mymetalevents.com/api/Artists/$id'));
+
+  // if (response.statusCode == 200) {
+  //   print(response.body);
+  //   List data = json.decode(response.body);
+  //   return data.map((item) => Artist.fromJson(item)).toList().firstOrNull;
+  // } else {
+  //   return null;
+  //   //throw Exception('Failed to load artists');
+  // }
+
+   try {
+      final response = await _dio.get('https://api-metalcollector.mymetalevents.com/api/Artists/$id');
+      if (response.statusCode == 200) {
+        var data= response.data; // Esto ya debería ser un Map
+      return Artist.fromJson(data); // Pasamos el Map directamente
+      } else {
+        throw Exception('Failed to load band info');
+      }
+    } catch (e) {
+      print(e);
+      throw Exception('Failed to load band info');
+    }
 }

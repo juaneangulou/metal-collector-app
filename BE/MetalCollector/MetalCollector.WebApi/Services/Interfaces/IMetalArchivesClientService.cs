@@ -4,7 +4,8 @@ namespace MetalCollector.WebApi.Services.Interfaces
 {
     public interface IMetalArchivesClientService
     {
-        Task<List<ArtistDto>> FetchArtists(string query);
-        Task<ArtistDto> FetchArtistById(string id);
+        Task<List<ArtistMADto>> FetchArtists(string query);
+        Task<ArtistMADto> FetchArtistById(string id);
+        Task<ArtistMADto> AddArtist(ArtistMADto artist);
     }
 }

@@ -264,21 +264,21 @@ class _CreateItemCollectionFormWidgetState
                       _formKey.currentState!.save();
                       // final item=FirebaseFirestore.instance.collection('artists').add(_selectedArtistDetails!.toMap());
                       // print(item);
-                      final checkArtistInDb =
-                          await ArtistFirebaseService().getByEMId(
-                        _selectedArtistDetails!.emId!,
-                      );
+                      // final checkArtistInDb =
+                      //     await ArtistFirebaseService().getByEMId(
+                      //    _selectedArtistDetails!.emId!,
+                      // );
 
-                      if ((checkArtistInDb!.length ?? 0) > 0) {
-                      } else {
-                        artistId =
-                            await artistService.add(_selectedArtistDetails!);
-                      }
+                      // if ((checkArtistInDb!.length ?? 0) > 0) {
+                      // } else {
+                      //   artistId =
+                      //       await artistService.add(_selectedArtistDetails!);
+                      // }
 
                       // final artistUpdated =
                       //     await artistService.getById(artistId!);
                       ItemCollection newItem = ItemCollection(
-                        artistId: artistId,
+                        artistId: _selectedArtistDetails!.id,
                         emId: _selectedArtistDetails!.emId,
                         name: _articleNameController.value.text,
                         itemType: _selectedType!,

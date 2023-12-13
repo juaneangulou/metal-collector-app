@@ -1,4 +1,5 @@
-﻿using MetalCollector.WebApi.Services.Interfaces;
+﻿using MetalCollector.WebApi.Dtos;
+using MetalCollector.WebApi.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,5 +29,20 @@ namespace MetalCollector.WebApi.Controllers
             var artist = await _metalArchivesClientService.FetchArtistById(id);
             return Ok(artist);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> AddArtist(ArtistMADto artist)
+        {
+            var response = await _metalArchivesClientService.AddArtist(artist);
+            return Ok(response);
+        }
+
+        //[HttpGet]
+        //[Route("{id}")]
+        //public async Task<IActionResult> GetArtistById(string id)
+        //{
+        //    var artist = await _metalArchivesClientService.FetchArtistById(id);
+        //    return Ok(artist);
+        //}
     }
 }

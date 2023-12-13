@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metal_collector/models/dashboard-models.dart';
@@ -10,7 +9,6 @@ import 'package:metal_collector/pages/view-item-collection-page.dart';
 import 'package:metal_collector/services/firebase-services/item-collection-firebase.dart';
 
 import 'bottom-navigation-custom-widget.dart';
-import 'firebase_options.dart';
 
 // The route configuration.
 final GoRouter _router = GoRouter(
@@ -51,9 +49,7 @@ final GoRouter _router = GoRouter(
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  
   runApp(const MainApp());
 }
 

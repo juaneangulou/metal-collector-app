@@ -2,7 +2,7 @@
 
 namespace MetalCollector.WebApi.Dtos
 {
-    public class ArtistDto
+    public class ArtistMADto
     {
         [JsonPropertyName("id")]
         public string Id { get; set; }
