@@ -11,9 +11,7 @@ namespace MetalCollector.WebApi.Configurations
 
         public static IServiceCollection SetDatabaseConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
-            //var connectionString = Environment.GetEnvironmentVariable(MyVaccineLiterals.CONNECTION_STRING);
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
-           // var connectionString = "Server=api-metalcollector.mymetalevents.com;Database=mymetalevents_metalcollectordb;User Id=metalcollector_admin;Password=Icaro88.21;Encrypt=False;TrustServerCertificate=True;";
+              var connectionString = configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<MetalCollectorDbContext>(options =>
                         options.UseSqlServer(

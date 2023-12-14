@@ -53,6 +53,8 @@ namespace MetalCollector.WebApi.Models
         public string? EmId { get; set; }
         public string ItemType { get; set; }
         public string Name { get; set; }
-        public string? MAArtistId { get; set; }        
+        public string? MAArtistId { get; set; }
+        public Artist? Artist { get; set; }
+
     }
 }

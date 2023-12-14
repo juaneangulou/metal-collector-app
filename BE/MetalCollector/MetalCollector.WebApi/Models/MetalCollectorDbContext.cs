@@ -37,7 +37,14 @@ namespace MetalCollector.WebApi.Models
         .WithMany(a => a.Discographies)
         .HasForeignKey(d => d.ArtistId)
         .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Item>()
+       .HasOne(i => i.Artist) // Un Item tiene un Artist
+       .WithMany(a => a.Items) // Un Artist tiene muchos Items
+       .HasForeignKey(i => i.ArtistId) // La clave foránea en Item
+       .OnDelete(DeleteBehavior.SetNull);
         }
+
 
     }
 }

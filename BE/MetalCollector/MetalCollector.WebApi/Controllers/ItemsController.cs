@@ -20,9 +20,9 @@ namespace MetalCollector.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetItems()
+        public async Task<IActionResult> GetItems(string? query)
         {
-            var items =  await _itemService.GetItems();
+            var items =  await _itemService.GetItems(query);
             return Ok(items);
         }
 

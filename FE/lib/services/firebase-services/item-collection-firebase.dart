@@ -11,6 +11,23 @@ class ItemCollectionFirebaseService {
   get collectionName => 'item-collection';
   final ItemMetalCollectorService _metalCollectorService =
       ItemMetalCollectorService();
+  final String baseUrl =
+      'https://api-metalcollector.mymetalevents.com/api/Items';
+
+  Future<List<dynamic>> searchItems(String query) async {
+    try {
+      final response =
+          await _dio.get(baseUrl, queryParameters: {'query': query});
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        throw Exception('Failed to fetch items');
+      }
+    } catch (e) {
+      print(e);
+      throw Exception('Failed to fetch items');
+    }
+  }
 
   Future<List<ItemCollection>> getAll() async {
     try {
@@ -130,7 +147,8 @@ class ItemCollectionFirebaseService {
 
   Future<bool> deleteItem(String itemId) async {
     try {
-      final response = await _dio.delete('https://api-metalcollector.mymetalevents.com/api/Items/$itemId');
+      final response = await _dio.delete(
+          'https://api-metalcollector.mymetalevents.com/api/Items/$itemId');
       if (response.statusCode == 200) {
         // Asumiendo que una respuesta 200 indica éxito
         return true;

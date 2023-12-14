@@ -6,6 +6,25 @@ import 'package:metal_collector/models/item-collection.dart';
 class ItemMetalCollectorService {
   final Dio _dio = Dio();
 
+  final String baseUrl =
+      'https://api-metalcollector.mymetalevents.com/api/Items';
+
+  Future<List<ItemCollection>> searchItems(String query) async {
+    try {
+      final response =
+          await _dio.get(baseUrl, queryParameters: {'query': query});
+      if (response.statusCode == 200) {
+        List data = response.data;
+        return data.map((item) => ItemCollection.fromJson(item)).toList();
+      } else {
+        throw Exception('Failed to fetch items');
+      }
+    } catch (e) {
+      print(e);
+      throw Exception('Failed to fetch items');
+    }
+  }
+
   Future<List<ItemCollection>> fetchItems() async {
     try {
       final response = await _dio

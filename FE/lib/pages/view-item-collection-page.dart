@@ -22,6 +22,23 @@ class _ItemCollectionScreenState extends State<ItemCollectionScreen> {
   final serviceArtist = ArtistFirebaseService();
   final serviceItemCollection = ItemMetalCollectorService();
 
+  List<String> _suggestions = [];
+  TextEditingController _controller = TextEditingController();
+
+  // void onTextChanged(String text) async {
+  //   if (text.isNotEmpty) {
+  //     var results = await serviceItemCollection.searchItems(text);
+  //     setState(() {
+  //       _suggestions =
+  //           results.map((item) => item?.?.toString() ?? '').toList();
+  //     });
+  //   } else {
+  //     setState(() {
+  //       _suggestions = [];
+  //     });
+  //   }
+  // }
+
   @override
   void initState() {
     super.initState();
@@ -44,10 +61,11 @@ class _ItemCollectionScreenState extends State<ItemCollectionScreen> {
     // Tu lógica para limpiar el filtro...
   }
 
-   deleteItem(String itemId) async {
+  deleteItem(String itemId) async {
     // Aquí puedes añadir tu lógica para eliminar un ítem
-   await serviceItemCollection.deleteItem(itemId); // Llama a tu servicio para eliminar el ítem
-   fetchData();
+    await serviceItemCollection
+        .deleteItem(itemId); // Llama a tu servicio para eliminar el ítem
+    fetchData();
     // Luego, actualiza el estado para reflejar la eliminación
   }
 
@@ -58,13 +76,24 @@ class _ItemCollectionScreenState extends State<ItemCollectionScreen> {
       body: Column(
         children: [
           // Tu widget de Autocomplete y botón de limpiar filtro...
+          TextField(
+            controller: _controller,
+            // onChanged: onTextChanged,
+            onChanged: (String value) async {
+                  allCollections = await serviceItemCollection.searchItems(value);
 
+              setState(() {
+                  displayedCollections = List.from(allCollections);
+              });
+            }),
+      
           Expanded(
             child: ListView.builder(
               itemCount: displayedCollections.length,
               itemBuilder: (context, index) {
                 final item = displayedCollections[index];
-                final artist = displayedCollections[index].artists; // Asegúrate de que esta línea obtenga correctamente el artista
+                final artist = displayedCollections[index]
+                    .artists; // Asegúrate de que esta línea obtenga correctamente el artista
 
                 return Card(
                   elevation: 4,
@@ -76,12 +105,14 @@ class _ItemCollectionScreenState extends State<ItemCollectionScreen> {
                         subtitle: Text(item.itemType),
                         trailing: IconButton(
                           icon: Icon(Icons.delete),
-                          onPressed: () async => deleteItem(item.itemId!), // Llama a deleteItem cuando se presione el ícono
+                          onPressed: () async => deleteItem(item
+                              .itemId!), // Llama a deleteItem cuando se presione el ícono
                         ),
                       ),
                       if (artist != null)
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                           child: ArtistCard(artist: artist),
                         ),
                     ],

@@ -21,6 +21,7 @@
         public ICollection<Discography> Discographies { get; set; }
         public ICollection<Lineup> Lineup { get; set; }
         public ICollection<Social> Social { get; set; }
+        public ICollection<Item> Items { get; set; }
 
     }
     public class Discography

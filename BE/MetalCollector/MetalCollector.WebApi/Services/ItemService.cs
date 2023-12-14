@@ -4,6 +4,7 @@ using MetalCollector.WebApi.Models;
 using MetalCollector.WebApi.Repositories.Interfaces;
 using MetalCollector.WebApi.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace MetalCollector.WebApi.Services
 {
@@ -50,16 +51,16 @@ namespace MetalCollector.WebApi.Services
             {
                 if (!string.IsNullOrEmpty(item.ArtistId))
                 {
-                    var artist =  await _artistRepository.FindBy(x => x.Id == item.ArtistId).FirstOrDefaultAsync();
+                    var artist = await _artistRepository.FindBy(x => x.Id == item.ArtistId).FirstOrDefaultAsync();
                     if (artist == null)
                     {
                         var artistFromMA = await _metalArchivesClientService.FetchArtistById(item.ArtistId);
                         if (artistFromMA != null)
                         {
-                           await AddArtist(artistFromMA);
+                            await AddArtist(artistFromMA);
 
                         }
-                    }                   
+                    }
                 }
 
                 var itemEntity = _mapper.Map<Item>(item);
@@ -74,26 +75,57 @@ namespace MetalCollector.WebApi.Services
             }
         }
 
-        public async Task<IEnumerable<ItemDto>> GetItems()
+        public async Task<IEnumerable<ItemDto>> GetItems(string query)
         {
-            var items = await _itemRepository.GetAll().AsNoTracking().ToListAsync();
+            var items = new List<Item>();
+            if (!string.IsNullOrEmpty(query))
+            {
+                items = await SearchItemsAndArtists(query);
+
+
+            }
+            else
+            {
+                items = await _itemRepository.GetAll().Include(x => x.Artist).AsNoTracking().ToListAsync();
+            }
             if (items == null)
                 return null;
 
             var itemsDto = _mapper.Map<IEnumerable<ItemDto>>(items);
-            foreach (var item in itemsDto)
-            {
-                if (!string.IsNullOrEmpty(item.ArtistId))
-                {
-                    var artist = await _artistRepository.FindBy(x => x.Id == item.ArtistId).FirstOrDefaultAsync();
-                    if (artist != null)
-                    {
-                        item.Artists = _mapper.Map<ArtistMADto>(artist);
-                    }
-                }
-            }
+
             return itemsDto;
         }
+
+
+        public async Task<List<Item>> SearchItemsAndArtists(string searchText)
+        {
+            var itemsWithMatchingName = await _context.Items
+                .Include(i => i.Artist)
+                .Where(i => i.Name.Contains(searchText))
+                .ToListAsync();
+
+            if (itemsWithMatchingName.Any())
+            {
+                return itemsWithMatchingName;
+            }
+
+            var artistsWithMatchingName = await _context.Artists
+                .Where(a => a.Name.Contains(searchText))
+                .ToListAsync();
+
+            if (!artistsWithMatchingName.Any())
+            {
+                return new List<Item>(); // No se encontraron coincidencias
+            }
+
+            var artistIds = artistsWithMatchingName.Select(a => a.Id).ToList();
+
+            return await _context.Items
+                .Include(i => i.Artist)
+                .Where(i => artistIds.Any(x=>x==i.ArtistId))
+                .ToListAsync();
+        }
+
         private async Task AddArtist(ArtistMADto artistFromMA)
         {
             if (artistFromMA == null)
@@ -135,7 +167,7 @@ namespace MetalCollector.WebApi.Services
 
         public async Task<ItemDto> DeleteItems(string itemId)
         {
-            var items = await _itemRepository.FindBy(x=>x.ItemId==itemId).FirstOrDefaultAsync();
+            var items = await _itemRepository.FindBy(x => x.ItemId == itemId).FirstOrDefaultAsync();
             if (items == null)
                 return null;
 

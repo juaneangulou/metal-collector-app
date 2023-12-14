@@ -8,7 +8,9 @@ namespace MetalCollector.WebApi.Configurations
     {
         public MapperConfiguration()
         {
-            CreateMap<Item, ItemDto>().ReverseMap();
+            CreateMap<Item, ItemDto>()
+                .ForMember(dest => dest.Artists, opt => opt.MapFrom(src => src.Artist))
+                .ReverseMap();
             CreateMap<Artist, ArtistMADto>()
                 .ForMember(dest => dest.Discography, opt => opt.MapFrom(src => src.Discographies))
                 .ReverseMap();
